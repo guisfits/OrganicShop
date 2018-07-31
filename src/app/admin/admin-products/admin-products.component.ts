@@ -12,13 +12,11 @@ export class AdminProductsComponent implements OnInit {
 	constructor(private productService: ProductService) {}
 
 	ngOnInit() {
-		this.products$ = this.productService.getAll().map(changes => {
+		this.products$ = this.productService.list().map(changes => {
 			return changes.map(c => ({
 				key: c.payload.key,
 				value: c.payload.val()
 			}));
 		});
-
-		console.log(this.products$);
 	}
 }

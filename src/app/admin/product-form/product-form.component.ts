@@ -4,14 +4,16 @@ import { CategoryService } from "../../category.service";
 import { Router, ActivatedRoute } from "@angular/router";
 import "rxjs/add/operator/map";
 import "rxjs/add/operator/take";
+import { THROW_IF_NOT_FOUND } from "@angular/core/src/di/injector";
 
 @Component({
 	selector: "app-product-form",
 	templateUrl: "./product-form.component.html",
 	styleUrls: ["./product-form.component.css"]
 })
-export class ProductFormComponent {
+export class ProductFormComponent implements OnInit {
 	categories$;
+	id;
 	product = {};
 
 	constructor(
@@ -19,19 +21,40 @@ export class ProductFormComponent {
 		private route: ActivatedRoute,
 		private categoryService: CategoryService,
 		private productService: ProductService
-	) {
-		this.categories$ = this.categoryService.getCategories();
-		const id = this.route.snapshot.paramMap.get("id");
-		if (id) {
+	) {}
+
+	ngOnInit(): void {
+		this.categories$ = this.categoryService.getCategories().map(cat => {
+			return cat.map(c => ({
+				key: c.payload.key,
+				value: c.payload.val()
+			}));
+		});
+
+		this.id = this.route.snapshot.paramMap.get("id");
+		if (this.id) {
 			this.productService
-				.get(id)
+				.get(this.id)
 				.take(1)
 				.subscribe(p => (this.product = p));
 		}
 	}
 
 	save(product) {
-		this.productService.create(product);
+		if (this.id) {
+			this.productService.update(this.id, product);
+		} else {
+			this.productService.create(product);
+		}
+		this.router.navigate(["/admin/products"]);
+	}
+
+	delete() {
+		if (!confirm("Are you sure you want to delete this product?")) {
+			return;
+		}
+
+		this.productService.delete(this.id);
 		this.router.navigate(["/admin/products"]);
 	}
 }
