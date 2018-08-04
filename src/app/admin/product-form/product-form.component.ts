@@ -1,10 +1,9 @@
-import { ProductService } from "./../../product.service";
-import { Component, OnInit } from "@angular/core";
-import { CategoryService } from "../../category.service";
-import { Router, ActivatedRoute } from "@angular/router";
-import "rxjs/add/operator/map";
-import "rxjs/add/operator/take";
-import { THROW_IF_NOT_FOUND } from "@angular/core/src/di/injector";
+import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
+import { map, take } from 'rxjs/operators';
+
+import { CategoryService } from '../../category.service';
+import { ProductService } from './../../product.service';
 
 @Component({
 	selector: "app-product-form",
@@ -24,18 +23,20 @@ export class ProductFormComponent implements OnInit {
 	) {}
 
 	ngOnInit(): void {
-		this.categories$ = this.categoryService.getCategories().map(cat => {
-			return cat.map(c => ({
-				key: c.payload.key,
-				value: c.payload.val()
-			}));
-		});
+		this.categories$ = this.categoryService.getCategories().pipe(
+			map(cat => {
+				return cat.map(c => ({
+					key: c.payload.key,
+					value: c.payload.val()
+				}));
+			})
+		);
 
 		this.id = this.route.snapshot.paramMap.get("id");
 		if (this.id) {
 			this.productService
 				.get(this.id)
-				.take(1)
+				.pipe(take(1))
 				.subscribe(p => (this.product = p));
 		}
 	}

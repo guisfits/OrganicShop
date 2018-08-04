@@ -1,5 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Subscription } from 'rxjs';
+import { map } from 'rxjs/operators';
 
 import { Product } from './../../models/product';
 import { ProductService } from './../../product.service';
@@ -19,12 +20,14 @@ export class AdminProductsComponent implements OnInit, OnDestroy {
 	ngOnInit() {
 		this.subscription = this.productService
 			.list()
-			.map(changes => {
-				return changes.map(c => ({
-					key: c.payload.key,
-					value: <any>c.payload.val()
-				}));
-			})
+			.pipe(
+				map(changes => {
+					return changes.map(c => ({
+						key: c.payload.key,
+						value: <any>c.payload.val()
+					}));
+				})
+			)
 			.subscribe(prod => {
 				this.products = this.filteredProducts = prod.map(p => {
 					return <Product>{
@@ -32,7 +35,7 @@ export class AdminProductsComponent implements OnInit, OnDestroy {
 						category: p.value.category,
 						imageUrl: p.value.imageUrl,
 						price: p.value.price,
-						title: p.value.price
+						title: p.value.title
 					};
 				});
 			});
