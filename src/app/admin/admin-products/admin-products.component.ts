@@ -1,6 +1,8 @@
-import { ProductService } from "./../../product.service";
-import { Component, OnInit, OnDestroy } from "@angular/core";
-import { Subscription } from "rxjs";
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Subscription } from 'rxjs';
+
+import { Product } from './../../models/product';
+import { ProductService } from './../../product.service';
 
 @Component({
 	selector: "app-admin-products",
@@ -8,8 +10,8 @@ import { Subscription } from "rxjs";
 	styleUrls: ["./admin-products.component.css"]
 })
 export class AdminProductsComponent implements OnInit, OnDestroy {
-	products: any[];
-	filteredProducts: any[];
+	products: Product[];
+	filteredProducts: Product[];
 	subscription: Subscription;
 
 	constructor(private productService: ProductService) {}
@@ -20,14 +22,19 @@ export class AdminProductsComponent implements OnInit, OnDestroy {
 			.map(changes => {
 				return changes.map(c => ({
 					key: c.payload.key,
-					category: c.payload.val().category,
-					imageUrl: c.payload.val().imageUrl,
-					price: c.payload.val().price,
-					title: c.payload.val().title
+					value: <any>c.payload.val()
 				}));
 			})
 			.subscribe(prod => {
-				this.products = this.filteredProducts = prod;
+				this.products = this.filteredProducts = prod.map(p => {
+					return <Product>{
+						key: p.key,
+						category: p.value.category,
+						imageUrl: p.value.imageUrl,
+						price: p.value.price,
+						title: p.value.price
+					};
+				});
 			});
 	}
 
