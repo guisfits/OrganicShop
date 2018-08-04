@@ -23,7 +23,7 @@ export class ProductFormComponent implements OnInit {
 	) {}
 
 	ngOnInit(): void {
-		this.categories$ = this.categoryService.getCategories().pipe(
+		this.categories$ = this.categoryService.list().pipe(
 			map(cat => {
 				return cat.map(c => ({
 					key: c.payload.key,
