@@ -6,7 +6,6 @@ import { map } from 'rxjs/operators';
 import { Product } from '../models/product';
 import { ProductModel } from '../models/product.model';
 import { ProductService } from '../product.service';
-import { CategoryService } from './../category.service';
 
 @Component({
 	selector: "app-products",
@@ -14,9 +13,8 @@ import { CategoryService } from './../category.service';
 	styleUrls: ["./products.component.css"]
 })
 export class ProductsComponent implements OnInit, OnDestroy {
-	products: Product[];
-	filteredProducts: Product[];
-	categories;
+	products: Product[] = [];
+	filteredProducts: Product[] = [];
 	category: string;
 
 	categorySubscription: Subscription;
@@ -24,7 +22,6 @@ export class ProductsComponent implements OnInit, OnDestroy {
 
 	constructor(
 		private productService: ProductService,
-		private categoryService: CategoryService,
 		private route: ActivatedRoute
 	) {}
 
@@ -37,15 +34,6 @@ export class ProductsComponent implements OnInit, OnDestroy {
 				)
 			)
 			.subscribe(p => (this.products = this.filteredProducts = p));
-
-		this.categorySubscription = this.categoryService
-			.list()
-			.pipe(
-				map(cat =>
-					cat.map(c => <any>{ value: c.payload.val(), key: c.key })
-				)
-			)
-			.subscribe(categ => (this.categories = categ));
 
 		this.route.queryParamMap.subscribe(params => {
 			this.category = params.get("category");
