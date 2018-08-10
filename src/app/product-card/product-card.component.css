@@ -1,0 +1,13 @@
+.card {
+	margin-bottom: 30px;
+	width: 350px;
+	height: 400px;
+}
+
+.card-footer {
+	padding: 0;
+}
+
+.card-img-top {
+	min-height: 250px;
+}

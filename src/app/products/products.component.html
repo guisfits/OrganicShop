@@ -7,15 +7,7 @@
 			<ng-container *ngFor="let p of
 				filteredProducts; let i= index">
 				<div class="col">
-					<div class="card" style="width: 15rem;">
-						<img [src]="p.imageUrl" alt="" class="card-img-top">
-						<div class="card-body">
-							<h4 class="card-title">{{ p.title }}</h4>
-							<p class="card-text"> {{ p.price | currency: 'R$': true }} </p>
-							<a class="btn btn-primary"> Add to Cart
-							</a>
-						</div>
-					</div>
+					<product-card [show-actions]="true" [product]="p"></product-card>
 				</div>
 				<div *ngIf="(i + 1) % 2 === 0" class="w-100"></div>
 			</ng-container>

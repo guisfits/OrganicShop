@@ -1,6 +1,5 @@
-import { Injectable } from "@angular/core";
-import { AngularFireDatabase } from "angularfire2/database";
-import { THROW_IF_NOT_FOUND } from "@angular/core/src/di/injector";
+import { Injectable } from '@angular/core';
+import { AngularFireDatabase } from 'angularfire2/database';
 
 @Injectable({
 	providedIn: "root"
